@@ -1,6 +1,11 @@
 const db = require("./db");
 const bcrypt = require("bcryptjs");
 
+const initUserArray = [
+  { name: 'Rohit', email: 'rohit@gmail.com', password: "Rohit@123", userType: 'free'},
+  { name: 'Rahul', email: 'rahul@gmail.com', password: "Rahul@123", userType: 'premium'},
+  { name: 'Admin', email: 'admin@gmail.com', password: "Admin@123", userType: 'admin'},
+]
 
 // constructor
 const Users = function(user) {
@@ -31,43 +36,21 @@ const initUserTable = () => {
     });
 }
 
-const initFreeTire = async() => {
+const initUserList = async() => {
   const sql = "INSERT INTO users (Name, Email, Password, UserType) VALUES (?, ?, ?, ?)";
-  db.run(sql, ['Rohit', 'rohit@gmail.com', await bcrypt.hash("Rohit@123", 10), "free"], (err, res) => {
-    if (err) {
-      console.log("error: ", err);
-      return;
-    }
+  const stmt  = db.prepare(sql);
+  var bar = new Promise((resolve, reject) => {
+    initUserArray.forEach(async(ele, index, array) => {
+      stmt.run([ele.name, ele.email, await bcrypt.hash(ele.password, 10), ele.userType]);
 
+      if(index === array.length - 1) resolve()
+    })
+  })
+
+  bar.then(async() => {
+    await stmt.finalize();
     getUsers();
-    console.log({ status: true, message: "A new free-tire user has been craeted." });
-  });
-}
-
-const initPremiumTire = async() => {
-  const sql = "INSERT INTO users (Name, Email, Password, UserType) VALUES (?, ?, ?, ?)";
-  db.run(sql, ['Rahul', 'rahul@gmail.com', await bcrypt.hash("Rahul@123", 10), "premium"], (err, res) => {
-    if (err) {
-      console.log("error: ", err);
-      return;
-    }
-
-    getUsers();
-    console.log({ status: true, message: "A new premium-tire user has been craeted." });
-  });
-}
-
-const initAdminTire = async() => {
-  const sql = "INSERT INTO users (Name, Email, Password, UserType) VALUES (?, ?, ?, ?)";
-  db.run(sql, ['Admin', 'admin@gmail.com', await bcrypt.hash("Admin@123", 10), "admin"], (err, res) => {
-    if (err) {
-      console.log("error: ", err);
-      return;
-    }
-
-    getUsers();
-    console.log({ status: true, message: "A new admin has been craeted." });
-  });
+  })
 }
 
 const getUsers = () => {
@@ -79,15 +62,12 @@ const getUsers = () => {
     }
 
     if(users.length === 0){
-      initFreeTire();
-      initPremiumTire();
-      initAdminTire();
+      initUserList();
     }
 
     console.log("Users: ", users);
   });
 }
-
 
 const dropTable = () => {
   const sql = `DROP TABLE users`;
@@ -104,4 +84,4 @@ const dropTable = () => {
 // dropTable();
 initUserTable();
 
-module.exports = Users;
+module.exports = Users; 

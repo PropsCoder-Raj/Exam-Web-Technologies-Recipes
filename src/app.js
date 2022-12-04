@@ -4,8 +4,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 
 require('dotenv').config();
-require('./api/models/cards.model');
-require('./api/models/items.model');
+require('./api/models/user');
 
 const middlewares = require('./middlewares');
 const app = express();
@@ -21,9 +20,6 @@ app.get('/', (req, res) => {
     message: '🦄🌈✨👋🌎 Welcome REST API 🌍🌏✨🌈🦄',
   });
 });
-
-require("./api/routes/cards.routes")(app);
-require("./api/routes/items.routes")(app);
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);

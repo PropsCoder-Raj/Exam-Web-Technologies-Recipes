@@ -6,7 +6,7 @@ const cors = require('cors');
 require('dotenv').config();
 require('./api/models/user');
 
-const middlewares = require('./middlewares');
+const middlewares = require('./api/middleware/errorMiddleware');
 const app = express();
 
 app.use(express.json());
@@ -20,6 +20,9 @@ app.get('/', (req, res) => {
     message: '🦄🌈✨👋🌎 Welcome REST API 🌍🌏✨🌈🦄',
   });
 });
+
+
+app.use("/api/v1/user/", require("./api/routes/user"));
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);

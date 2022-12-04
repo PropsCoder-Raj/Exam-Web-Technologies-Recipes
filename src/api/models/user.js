@@ -15,6 +15,32 @@ const Users = function(user) {
     this.UserType = user.UserType;
 };
 
+
+Users.getUserUsingEmail = async(email, result) => {
+  var result = [];
+  const sql = `SELECT * FROM users WHERE Email = "${email}"`;
+  db.all(sql, [], (err, users) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+    }
+    
+    console.log("users: ", users);
+
+    if (items.length > 0) {
+      console.log("found items: ", items);
+      result(null, users);
+      return;
+    }
+
+    // not found Items with the cardNo
+    result({ kind: "not_found" }, null);
+  })
+}
+
+
+
+
 const initUserTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS users (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,

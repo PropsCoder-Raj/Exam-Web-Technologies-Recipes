@@ -17,23 +17,36 @@ const Users = function(user) {
 
 
 Users.getUserUsingEmail = async(email, result) => {
-  var result = [];
   const sql = `SELECT * FROM users WHERE Email = "${email}"`;
   db.all(sql, [], (err, users) => {
     if (err) {
       console.log("error: ", err);
       result(err, null);
     }
-    
-    console.log("users: ", users);
 
-    if (items.length > 0) {
-      console.log("found items: ", items);
+    if (users.length > 0) {
       result(null, users);
       return;
     }
 
-    // not found Items with the cardNo
+    result({ kind: "not_found" }, null);
+  })
+}
+
+
+Users.getUserUsingId = async(Id, result) => {
+  const sql = `SELECT * FROM users WHERE Id = "${Id}"`;
+  db.all(sql, [], (err, users) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+    }
+
+    if (users.length > 0) {
+      result(null, users);
+      return;
+    }
+
     result({ kind: "not_found" }, null);
   })
 }
@@ -91,7 +104,7 @@ const getUsers = () => {
       initUserList();
     }
 
-    console.log("Users: ", users);
+    console.log("Users: ", users.length);
   });
 }
 

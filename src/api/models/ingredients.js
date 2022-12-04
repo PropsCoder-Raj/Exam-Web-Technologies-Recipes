@@ -56,7 +56,7 @@ const getIngredients = () => {
       return;
     }
 
-    console.log("Ingredients: ", ingredients);
+    console.log("Ingredients: ", ingredients.length);
   });
 }
 

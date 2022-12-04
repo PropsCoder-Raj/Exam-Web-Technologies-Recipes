@@ -51,7 +51,7 @@ const getRecipes = () => {
       return;
     }
 
-    console.log("Recipes: ", recipes);
+    console.log("Recipes: ", recipes.length);
   });
 }
 

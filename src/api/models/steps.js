@@ -55,7 +55,7 @@ const getSteps = () => {
       return;
     }
 
-    console.log("Steps: ", steps);
+    console.log("Steps: ", steps.length);
   });
 }
 

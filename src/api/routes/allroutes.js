@@ -8,11 +8,11 @@ const {
     createRecipes
 } = require("../controllers/recipes");
 
-const { isLoggedIn } = require("../middleware/user");
+const { isLoggedIn, isAdmin } = require("../middleware/user");
 const router = express.Router();
 
 
 router.route("/login").post(loginUser); // login user
-router.route("/recipe").post(createRecipes); // create recipes
+router.route("/recipe").post(isLoggedIn, isAdmin, createRecipes); // create recipes
 
 module.exports = router;

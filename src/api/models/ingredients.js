@@ -7,6 +7,26 @@ const Ingredients = function(ingredients) {
     this.RecipeId = ingredients.RecipeId;
 };
 
+
+Ingredients.craeteMulti = async(ingredientsArray, id, result) => {
+  const sql = "INSERT INTO ingredients (Entry, Type, RecipeId) VALUES (?, ?, ?)";
+  const stmt  = db.prepare(sql);
+  var bar = new Promise((resolve, reject) => {
+    ingredientsArray.forEach(async(ele, index, array) => {
+      stmt.run([ele.entry, ele.type, id]);
+
+      if(index === array.length - 1) resolve()
+    })
+  })
+
+  bar.then(async() => {
+    await stmt.finalize();
+    getIngredients();
+
+    result(null, { status: true, message: "Create Multiple Ingredients." });
+  })
+}
+
 const initIngredientsTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS ingredients (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -6,6 +6,24 @@ const Recipes = function(recipes) {
     this.Category = recipes.Category;
 };
 
+Recipes.create = async (newRecipes, result) => {
+  const sql = `INSERT INTO recipes (Name, Category) VALUES (?, ?)`;
+  db.run(sql, [newRecipes.Name, newRecipes.Category], (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    const sqlNew = `SELECT * from recipes order by Id DESC limit 1`;
+    db.get(sqlNew, [], (err, resNew) => {
+
+      getRecipes();
+      result(null, { status: true, message: "A new recipes has been craeted.", data: resNew });
+    })
+  });
+};
+
 const initRecipesTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS recipes (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,

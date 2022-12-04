@@ -7,6 +7,25 @@ const Steps = function(steps) {
     this.RecipeId = steps.RecipeId;
 };
 
+Steps.craeteMulti = async(stepsArray, id, result) => {
+  const sql = "INSERT INTO steps (Step_Id, Text, RecipeId) VALUES (?, ?, ?)";
+  const stmt  = db.prepare(sql);
+  var bar = new Promise((resolve, reject) => {
+    stepsArray.forEach(async(ele, index, array) => {
+      stmt.run([ele.step_id, ele.text, id]);
+
+      if(index === array.length - 1) resolve()
+    })
+  })
+
+  bar.then(async() => {
+    await stmt.finalize();
+    getSteps();
+    
+    result(null, { status: true, message: "Create Multiple Steps." });
+  })
+}
+
 const initStepsTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS steps (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -97,13 +97,13 @@ const getUsers = () => {
 
 const dropTable = () => {
   const sql = `DROP TABLE users`;
-  db.all(sql, [], (err, items) => {
+  db.all(sql, [], (err, users) => {
     if (err) {
       console.log("error: ", err);
       return;
     }
 
-    console.log("Items: ", items);
+    console.log("Users: ", users);
   });
 }
 

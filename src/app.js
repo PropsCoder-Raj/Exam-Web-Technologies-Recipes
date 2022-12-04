@@ -5,6 +5,9 @@ const cors = require('cors');
 
 require('dotenv').config();
 require('./api/models/user');
+require('./api/models/recipes');
+require('./api/models/ingredients');
+require('./api/models/steps');
 
 const middlewares = require('./api/middleware/errorMiddleware');
 const app = express();
@@ -22,7 +25,7 @@ app.get('/', (req, res) => {
 });
 
 
-app.use("/api/v1/user/", require("./api/routes/user"));
+app.use("/", require("./api/routes/allroutes")); // All routes
 
 app.use(middlewares.notFound);
 app.use(middlewares.errorHandler);

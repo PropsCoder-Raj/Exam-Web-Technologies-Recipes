@@ -113,7 +113,6 @@ exports.getAllRecipesForFree = BigPromise((req, res, next) => {
   });
 })
 
-
 exports.getStepsOverview = BigPromise((req, res, next) => {
   const { recipe_id } = req.params;
 
@@ -146,8 +145,6 @@ exports.getStepsOverview = BigPromise((req, res, next) => {
   });
 })
 
-
-
 exports.getDetailsSteps = BigPromise((req, res, next) => {
   const { recipe_id } = req.params;
 
@@ -177,5 +174,32 @@ exports.getDetailsSteps = BigPromise((req, res, next) => {
         }
       });
     });
+  });
+})
+
+exports.getSingleSteps = BigPromise((req, res, next) => {
+  const { recipe_id, step_id } = req.params;
+
+  if (!recipe_id || !step_id) {
+    return next(new Error("Please provide the recipe id OR step id."));
+  }
+
+  Recipes.findById(recipe_id, (err, resultRecipe) => {
+    if (err) return next(new Error(err.message || "Recipe not found."));
+
+      Steps.findByRecipesId(recipe_id, (err, resultSteps) => {
+        if (err) return next(new Error(err.message || "Some error occurred while getting the Ingredients."));
+
+        if (resultSteps.status === true) {
+          var resultArr = resultSteps.data.filter((ele) => {
+            return ele.Step_Id == step_id
+          })
+          return res.status(200).json({
+            success: true,
+            message: "Successfully Get steps overview the recipes with id " + recipe_id,
+            data: resultArr
+          });
+        }
+      });
   });
 })

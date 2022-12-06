@@ -51,3 +51,21 @@ exports.isFree = BigPromise(async (req, res, next) => {
     next();
   });
 });
+
+exports.isPremium = BigPromise(async (req, res, next) => {
+  // Save Cards in the database
+  User.getUserUsingId(req.userId, async(err, userdata) => {
+    if (err)
+      return next(new Error(err.message || "Some error occurred while getting the user."));
+    else
+      if (userdata.length == 0) {
+        return next(new Error("User not found"));
+      }
+
+    if (userdata[0].UserType != "premium") {
+      return next(new Error("Only admin are allowed to this APIs"));
+    }
+
+    next();
+  });
+});

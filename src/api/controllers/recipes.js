@@ -112,3 +112,36 @@ exports.getAllRecipesForFree = BigPromise((req, res, next) => {
     }
   });
 })
+
+
+exports.getStepsOverview = BigPromise((req, res, next) => {
+  const { recipe_id } = req.params;
+
+  if (!recipe_id) {
+    return next(new Error("Please provide the recipe id."));
+  }
+
+  Recipes.findById(recipe_id, (err, resultRecipe) => {
+    if (err) return next(new Error(err.message || "Recipe not found."));
+
+    Ingredients.findByRecipesId(recipe_id, (err, resultIngredients) => {
+      if (err) return next(new Error(err.message || "Some error occurred while getting the Ingredients."));
+
+      Steps.findByRecipesId(recipe_id, (err, resultSteps) => {
+        if (err) return next(new Error(err.message || "Some error occurred while getting the Ingredients."));
+
+        if (resultSteps.status === true) {
+          return res.status(200).json({
+            success: true,
+            message: "Successfully Get steps overview the recipes with id " + recipe_id,
+            data: {
+              name: resultRecipe.data[0].Name,
+              ingredients: resultIngredients.data,
+              step_count: resultSteps.data.length
+            }
+          });
+        }
+      });
+    });
+  });
+})

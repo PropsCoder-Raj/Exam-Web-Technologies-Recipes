@@ -7,7 +7,8 @@ const {
 const {
     createRecipes,
     deleteRecipes,
-    getAllRecipesForFree
+    getAllRecipesForFree,
+    getStepsOverview
 } = require("../controllers/recipes");
 
 const { isLoggedIn, isAdmin, isFree } = require("../middleware/user");
@@ -20,5 +21,6 @@ router.route("/recipe").post(isLoggedIn, isAdmin, createRecipes); // create reci
 router.route("/recipe/:recipe_id").delete(isLoggedIn, isAdmin, deleteRecipes); // create recipes
 
 router.route("/recipe").get(isLoggedIn, isFree, getAllRecipesForFree); // create recipes
+router.route("/recipe/:recipe_id").get(isLoggedIn, isFree, getStepsOverview); // create recipes
 
 module.exports = router;

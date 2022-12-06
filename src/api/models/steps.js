@@ -39,6 +39,26 @@ Steps.deleteByRecipeId = async (Id, result) => {
   });
 };
 
+Steps.findByRecipesId = (recipesId, result) => {
+  const sql = `SELECT * FROM steps WHERE RecipeId = ${recipesId}`;
+  db.all(sql, [], (err, items) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (items.length > 0) {
+      result(null, { status: true, message: "Get steps with recipes id "+recipesId, data: items, count: items.length });
+      return;
+    }
+
+    // not found Items with the recipesNo
+    result({ kind: "not_found" }, null);
+  });
+};
+
+
 const initStepsTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS steps (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,

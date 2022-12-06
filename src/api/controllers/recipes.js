@@ -42,7 +42,7 @@ exports.createRecipes = BigPromise((req, res, next) => {
           return next(
             new Error(
               err.message ||
-                "Some error occurred while creating the ingredients."
+              "Some error occurred while creating the ingredients."
             )
           );
 
@@ -98,3 +98,17 @@ exports.deleteRecipes = BigPromise((req, res, next) => {
     });
   });
 });
+
+exports.getAllRecipesForFree = BigPromise((req, res, next) => {
+  Recipes.getAllFreeRecipes((err, resultRecipe) => {
+    if (err) return next(new Error(err.message || "Recipe not found."));
+
+    if (resultRecipe.status === true) {
+      return res.status(200).json({
+        success: true,
+        message: "Successfully get the free recipes",
+        data: resultRecipe
+      });
+    }
+  });
+})

@@ -25,8 +25,8 @@ Recipes.create = async (newRecipes, result) => {
 };
 
 
-Recipes.findById = (recipesNo, result) => {
-  const sql = `SELECT * FROM recipes WHERE Id = ${recipesNo}`;
+Recipes.findById = (recipesId, result) => {
+  const sql = `SELECT * FROM recipes WHERE Id = ${recipesId}`;
   db.all(sql, [], (err, items) => {
     if (err) {
       console.log("error: ", err);
@@ -35,7 +35,27 @@ Recipes.findById = (recipesNo, result) => {
     }
 
     if (items.length > 0) {
-      result(null, { status: true, message: "Get items with recipes id "+recipesNo, data: items, count: items.length });
+      result(null, { status: true, message: "Get recipes with recipes id "+recipesId, data: items, count: items.length });
+      return;
+    }
+
+    // not found Items with the recipesNo
+    result({ kind: "not_found" }, null);
+  });
+};
+
+
+Recipes.getAllFreeRecipes = (result) => {
+  const sql = `SELECT * FROM recipes WHERE Category = "free"`;
+  db.all(sql, [], (err, items) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (items.length > 0) {
+      result(null, { status: true, message: "Get recipes with catagory is free", data: items, count: items.length });
       return;
     }
 

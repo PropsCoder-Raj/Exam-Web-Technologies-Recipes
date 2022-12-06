@@ -40,6 +40,25 @@ Ingredients.deleteByRecipeId = async (Id, result) => {
   });
 };
 
+Ingredients.findByRecipesId = (recipesId, result) => {
+  const sql = `SELECT * FROM ingredients WHERE RecipeId = ${recipesId}`;
+  db.all(sql, [], (err, items) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (items.length > 0) {
+      result(null, { status: true, message: "Get ingredients with RecipeId id "+recipesId, data: items, count: items.length });
+      return;
+    }
+
+    // not found Items with the recipesNo
+    result({ kind: "not_found" }, null);
+  });
+};
+
 
 const initIngredientsTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS ingredients (

@@ -6,15 +6,19 @@ const {
 
 const {
     createRecipes,
-    deleteRecipes
+    deleteRecipes,
+    getAllRecipesForFree
 } = require("../controllers/recipes");
 
-const { isLoggedIn, isAdmin } = require("../middleware/user");
+const { isLoggedIn, isAdmin, isFree } = require("../middleware/user");
 const router = express.Router();
 
 
 router.route("/login").post(loginUser); // login user
+
 router.route("/recipe").post(isLoggedIn, isAdmin, createRecipes); // create recipes
 router.route("/recipe/:recipe_id").delete(isLoggedIn, isAdmin, deleteRecipes); // create recipes
+
+router.route("/recipe").get(isLoggedIn, isFree, getAllRecipesForFree); // create recipes
 
 module.exports = router;

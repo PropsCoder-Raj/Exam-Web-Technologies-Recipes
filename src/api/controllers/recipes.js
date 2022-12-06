@@ -99,6 +99,10 @@ exports.deleteRecipes = BigPromise((req, res, next) => {
   });
 });
 
+
+
+
+
 exports.getAllRecipesForFree = BigPromise((req, res, next) => {
   Recipes.getAllFreeRecipes((err, resultRecipe) => {
     if (err) return next(new Error(err.message || "Recipe not found."));
@@ -107,7 +111,7 @@ exports.getAllRecipesForFree = BigPromise((req, res, next) => {
       return res.status(200).json({
         success: true,
         message: "Successfully get the free recipes",
-        data: resultRecipe
+        data: resultRecipe.data
       });
     }
   });
@@ -196,7 +200,7 @@ exports.getSingleSteps = BigPromise((req, res, next) => {
           })
           return res.status(200).json({
             success: true,
-            message: "Successfully Get steps overview the recipes with id " + recipe_id,
+            message: "Successfully Get single set the recipes with recipe id " + recipe_id + " and step id " + step_id,
             data: resultArr
           });
         }

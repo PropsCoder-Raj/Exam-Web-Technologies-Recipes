@@ -24,6 +24,39 @@ Recipes.create = async (newRecipes, result) => {
   });
 };
 
+
+Recipes.findById = (recipesNo, result) => {
+  const sql = `SELECT * FROM recipes WHERE Id = ${recipesNo}`;
+  db.all(sql, [], (err, items) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (items.length > 0) {
+      result(null, { status: true, message: "Get items with recipes id "+recipesNo, data: items, count: items.length });
+      return;
+    }
+
+    // not found Items with the recipesNo
+    result({ kind: "not_found" }, null);
+  });
+};
+
+Recipes.deleteById = async (Id, result) => {
+  const sql = `DELETE from recipes WHERE Id = (?)`;
+  db.run(sql, Id, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, { status: err, message: err });
+      return;
+    }
+    
+    result(null, { status: true, message: `Recipes - ${Id}. Recipe was deleted successfully!` });
+  });
+};
+
 const initRecipesTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS recipes (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,

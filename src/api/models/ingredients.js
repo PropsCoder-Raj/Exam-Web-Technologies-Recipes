@@ -27,6 +27,20 @@ Ingredients.craeteMulti = async(ingredientsArray, id, result) => {
   })
 }
 
+Ingredients.deleteByRecipeId = async (Id, result) => {
+  const sql = `DELETE from ingredients WHERE RecipeId = (?)`;
+  db.run(sql, Id, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, { status: err, message: err });
+      return;
+    }
+    
+    result(null, { status: true, message: `Ingredients - ${Id}. Ingredients was deleted successfully!` });
+  });
+};
+
+
 const initIngredientsTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS ingredients (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,

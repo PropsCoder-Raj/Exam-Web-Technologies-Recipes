@@ -26,6 +26,19 @@ Steps.craeteMulti = async(stepsArray, id, result) => {
   })
 }
 
+Steps.deleteByRecipeId = async (Id, result) => {
+  const sql = `DELETE from steps WHERE RecipeId = (?)`;
+  db.run(sql, Id, (err, res) => {
+    if (err) {
+      console.log("error: ", err);
+      result(null, { status: err, message: err });
+      return;
+    }
+    
+    result(null, { status: true, message: `Steps - ${Id}. Steps was deleted successfully!` });
+  });
+};
+
 const initStepsTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS steps (
     Id INTEGER PRIMARY KEY AUTOINCREMENT,

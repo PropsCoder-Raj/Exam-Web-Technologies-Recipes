@@ -58,6 +58,25 @@ Steps.findByRecipesId = (recipesId, result) => {
   });
 };
 
+Steps.findByRecipesIdTypeAndUpdate = (recipesId, steps, result) => {
+  var sql = ``;
+  if(steps !== undefined && steps.length !== 0){
+    steps.forEach((ele) => {
+      sql = `UPDATE Steps SET Text='${ele.text}' WHERE RecipeId = ${recipesId} AND Step_Id = ${ele.step_id}`;
+      db.run(sql, [], (err, items) => {
+        if (err) {
+          console.log("error: ", err);
+          result(err, null);
+          return;
+        }
+      });
+    })
+  }
+  
+  result(null, { status: true, message: "Update Steps with recipes id and type "+recipesId });
+  return;
+};
+
 
 const initStepsTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS steps (

@@ -78,6 +78,26 @@ Ingredients.findByType = (type, result) => {
   });
 };
 
+Ingredients.findByRecipesIdTypeAndUpdate = (recipesId, ingredients, result) => {
+  var sql = ``;
+  
+  if(ingredients !== undefined && ingredients.length !== 0){
+    ingredients.forEach((ele) => {
+      sql = `UPDATE ingredients SET Entry='${ele.entry}' WHERE RecipeId = ${recipesId} AND Type = '${ele.type}'`;
+      db.run(sql, [], (err, items) => {
+        if (err) {
+          console.log("error: ", err);
+          result(err, null);
+          return;
+        }
+      });
+    })
+  }
+  
+  result(null, { status: true, message: "Update ingredients with recipes id and type "+recipesId });
+  return;
+};
+
 
 const initIngredientsTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS ingredients (

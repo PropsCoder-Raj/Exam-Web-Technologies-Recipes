@@ -68,6 +68,77 @@ exports.createRecipes = BigPromise((req, res, next) => {
   });
 });
 
+exports.updateRecipes = BigPromise((req, res, next) => {
+  
+  const { recipe_id } = req.params;
+  const { name, category, ingredients, steps } = req.body;
+
+  if (!recipe_id) {
+    return next(new Error("Please provide the recipe id."));
+  }
+
+  if (ingredients && !isValidIngredients(ingredients)) {
+    return next(new Error("invalid ingredients data."));
+  }
+
+  if (steps && !isValidSteps(steps)) {
+    return next(new Error("invalid steps data."));
+  }
+
+  Recipes.findByIdAndUpdate(recipe_id, name, category, (err, result) => {
+    if (err) return next(new Error(err.message || "Some error occurred while update the Recipes."));
+
+    Ingredients.findByRecipesIdTypeAndUpdate(recipe_id, ingredients, (err, resultIngredients) => {
+      if (err) return next(new Error(err.message || "Some error occurred while update the ingredients."));
+      
+      Steps.findByRecipesIdTypeAndUpdate(recipe_id, steps, (err, resultSteps) => {
+        if (err) return next(new Error(err.message || "Some error occurred while update the steps."));
+    
+        res.status(200).send(result)
+      })
+
+    })
+  })
+});
+
+exports.replaceRecipes = BigPromise((req, res, next) => {
+  
+  const { recipe_id } = req.params;
+  const { name, category, ingredients, steps } = req.body;
+
+  if (!name || !category || !ingredients || !steps) {
+    return next(new Error("all fields are mendatory."));
+  }
+
+  if (!recipe_id) {
+    return next(new Error("Please provide the recipe id."));
+  }
+
+  if (ingredients && !isValidIngredients(ingredients)) {
+    return next(new Error("invalid ingredients data."));
+  }
+
+  if (steps && !isValidSteps(steps)) {
+    return next(new Error("invalid steps data."));
+  }
+
+  Recipes.findByIdAndUpdate(recipe_id, name, category, (err, result) => {
+    if (err) return next(new Error(err.message || "Some error occurred while update the Recipes."));
+
+    Ingredients.findByRecipesIdTypeAndUpdate(recipe_id, ingredients, (err, resultIngredients) => {
+      if (err) return next(new Error(err.message || "Some error occurred while update the ingredients."));
+      
+      Steps.findByRecipesIdTypeAndUpdate(recipe_id, steps, (err, resultSteps) => {
+        if (err) return next(new Error(err.message || "Some error occurred while update the steps."));
+    
+        result.message = "Replace recipes with recipes id "+recipe_id;
+        res.status(200).send(result)
+      })
+
+    })
+  })
+});
+
 exports.deleteRecipes = BigPromise((req, res, next) => {
   const { recipe_id } = req.params;
 
@@ -85,7 +156,7 @@ exports.deleteRecipes = BigPromise((req, res, next) => {
         if (err) return next(new Error(err.message || "Some error occurred while deleteing the Ingredients."));
 
         Steps.deleteByRecipeId(recipe_id, (err, resultSteps) => {
-          if (err) return next(new Error(err.message || "Some error occurred while deleteing the Ingredients."));
+          if (err) return next(new Error(err.message || "Some error occurred while deleteing the Steps."));
 
           if (resultSteps.status === true) {
             return res.status(200).json({

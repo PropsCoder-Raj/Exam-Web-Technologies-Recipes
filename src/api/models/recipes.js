@@ -44,6 +44,21 @@ Recipes.findById = (recipesId, result) => {
   });
 };
 
+Recipes.findByIdAndUpdate = (recipesId, name, category, result) => {
+  const sql = `UPDATE recipes SET Name='${name}', Category='${category}' WHERE Id = ${recipesId};`;
+  db.all(sql, [], (err, items) => {
+    console.log("items: ", items)
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    result(null, { status: true, message: "Update recipes with recipes id "+recipesId });
+    return;
+  });
+};
+
 
 Recipes.getAllFreeRecipes = (result) => {
   const sql = `SELECT * FROM recipes WHERE Category = "free"`;

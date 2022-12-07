@@ -64,6 +64,26 @@ Recipes.getAllFreeRecipes = (result) => {
   });
 };
 
+
+Recipes.getAllPremiumRecipes = (result) => {
+  const sql = `SELECT * FROM recipes WHERE Category = "premium"`;
+  db.all(sql, [], (err, items) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (items.length > 0) {
+      result(null, { status: true, message: "Get recipes with catagory is premium", data: items, count: items.length });
+      return;
+    }
+
+    // not found Items with the recipesNo
+    result({ kind: "not_found" }, null);
+  });
+};
+
 Recipes.deleteById = async (Id, result) => {
   const sql = `DELETE from recipes WHERE Id = (?)`;
   db.run(sql, Id, (err, res) => {

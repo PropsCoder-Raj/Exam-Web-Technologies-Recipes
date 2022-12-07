@@ -45,7 +45,7 @@ exports.isFree = BigPromise(async (req, res, next) => {
       }
 
     if (userdata[0].UserType != "free") {
-      return next(new Error("Only admin are allowed to this APIs"));
+      return next(new Error("Only free users are allowed to this APIs"));
     }
 
     next();
@@ -63,7 +63,7 @@ exports.isPremium = BigPromise(async (req, res, next) => {
       }
 
     if (userdata[0].UserType != "premium") {
-      return next(new Error("Only admin are allowed to this APIs"));
+      return next(new Error("Only premium users are allowed to this APIs"));
     }
 
     next();

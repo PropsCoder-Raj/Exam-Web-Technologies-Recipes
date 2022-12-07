@@ -207,3 +207,66 @@ exports.getSingleSteps = BigPromise((req, res, next) => {
       });
   });
 })
+
+
+
+
+exports.searchIngredient = BigPromise((req, res, next) => {
+  const { ingredient } = req.params;
+
+  if (!ingredient) {
+    return next(new Error("Please provide the ingredient name."));
+  }
+
+  Ingredients.findByType( ingredient , (err, resultIngredient) => {
+    if (err) return next(new Error(err.message || "Ingredient not found."));
+
+    if (resultIngredient.status === true) {
+      var resultArr = [];
+      resultIngredient.data.forEach((ele) => {
+        resultArr.push(`/recipe/${ele.RecipeId}`)
+      })
+      return res.status(200).json({
+        success: true,
+        message: "Successfully search by the ingredient name " + ingredient,
+        search: ingredient,
+        data: resultArr
+      });
+    }
+  });
+})
+
+exports.searchIngredientsListAll = BigPromise((req, res, next) => {
+  const { ingredient } = req.params;
+
+  if (!ingredient) {
+    return next(new Error("Please provide the ingredient name."));
+  }
+
+  Ingredients.findByType( ingredient , (err, resultIngredient) => {
+    if (err) return next(new Error(err.message || "Ingredient not found."));
+
+    if (resultIngredient.status === true) {
+      return res.status(200).json({
+        success: true,
+        message: "Successfully search by the ingredient name " + ingredient,
+        search: ingredient,
+        data: resultIngredient.data
+      });
+    }
+  });
+})
+
+exports.getAllRecipesForPremium = BigPromise((req, res, next) => {
+  Recipes.getAllPremiumRecipes((err, resultRecipe) => {
+    if (err) return next(new Error(err.message || "Recipe not found."));
+
+    if (resultRecipe.status === true) {
+      return res.status(200).json({
+        success: true,
+        message: "Successfully get the premium recipes",
+        data: resultRecipe.data
+      });
+    }
+  });
+})

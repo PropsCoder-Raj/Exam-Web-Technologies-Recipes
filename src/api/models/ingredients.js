@@ -59,6 +59,25 @@ Ingredients.findByRecipesId = (recipesId, result) => {
   });
 };
 
+Ingredients.findByType = (type, result) => {
+  const sql = `SELECT * FROM ingredients WHERE Type LIKE "%${type}%"`;
+  db.all(sql, [], (err, items) => {
+    if (err) {
+      console.log("error: ", err);
+      result(err, null);
+      return;
+    }
+
+    if (items.length > 0) {
+      result(null, { status: true, message: "Search ingredients with ingredients type "+type, data: items, count: items.length });
+      return;
+    }
+
+    // not found Items with the recipesNo
+    result({ kind: "not_found" }, null);
+  });
+};
+
 
 const initIngredientsTable = () => {
   const sql = `CREATE TABLE IF NOT EXISTS ingredients (

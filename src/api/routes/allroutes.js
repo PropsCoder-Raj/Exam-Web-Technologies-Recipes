@@ -8,9 +8,12 @@ const {
     createRecipes,
     deleteRecipes,
     getAllRecipesForFree,
+    getAllRecipesForPremium,
     getStepsOverview,
     getDetailsSteps,
-    getSingleSteps
+    getSingleSteps,
+    searchIngredient,
+    searchIngredientsListAll
 } = require("../controllers/recipes");
 
 const { isLoggedIn, isAdmin, isFree, isPremium } = require("../middleware/user");
@@ -26,5 +29,9 @@ router.route("/recipe").get(isLoggedIn, getAllRecipesForFree); // Get All free r
 router.route("/recipe/:recipe_id").get(isLoggedIn, getStepsOverview); // Get step overview by recipes id
 router.route("/recipe/:recipe_id/all").get(isLoggedIn, getDetailsSteps); // Get details stpes
 router.route("/recipe/:recipe_id/:step_id").get(isLoggedIn, getSingleSteps); // Get details stpes
+
+router.route("/recipe-premium/").get(isLoggedIn, isPremium, getAllRecipesForPremium); // Get details stpes
+router.route("/search/:ingredient").get(isLoggedIn, isPremium, searchIngredient); // Get details stpes
+router.route("/ingredients/:ingredient").get(isLoggedIn, isPremium, searchIngredientsListAll); // Get details stpes
 
 module.exports = router;
